@@ -50,7 +50,9 @@ parse_cli() {
                 exit 0
                 ;;
             '-P'|'--flag')
+                [ -z $2 ] && error "No flag specified to $1"
                 XBPS_USER_FLAGS+=($2)
+                shift # skip the passed flag itself
                 shift
                 ;;
             '-R'|'--regex'|'--regexp')
@@ -132,7 +134,7 @@ find_matches() {
 
 find_this_match() {
     local thing=$1
-    (xbps-query -RS $thing > $MATCHED_FILE ) || error "No such package: $thing"
+    (xbps-query -RS $thing $XBPS_FLAGS > $MATCHED_FILE ) || error "Could not query package: $thing"
 }
 
 postprocess_matches() {
